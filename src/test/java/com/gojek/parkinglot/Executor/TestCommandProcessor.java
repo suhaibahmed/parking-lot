@@ -15,8 +15,11 @@ public class TestCommandProcessor {
     static ParkingService parkingService = null;
 
     @Before
-    public void init(){
+    public  void init(){
+
+        ParkingService.clear();
         parkingService = ParkingService.createParkingService("5");
+
     }
 
     @Test
@@ -85,9 +88,38 @@ public class TestCommandProcessor {
     public void testGetStatus(){
         Car car = new Car("testRegistrationNumber1","white");
         parkingService.park_vehicle(car);
-        System.out.println(parkingService.getStatus());
         assertTrue(parkingService.getStatus().containsValue(car));
         assertTrue(parkingService.getStatus().containsKey(1));
+    }
+
+    @Test
+    public void testGetRegistrationNumbersFromColor(){
+        parkingService.park_vehicle(new Car("testRegistrationNumber1","white"));
+        assertTrue(parkingService.getRegistrationNumbersFromColor("white").contains("testRegistrationNumber1"));
+    }
+
+    @Test
+    public void testGetSlotNumbersFromColor(){
+        parkingService.park_vehicle(new Car("testRegistrationNumber1","white"));
+        parkingService.park_vehicle(new Car("testRegistrationNumber2","red"));
+        assertTrue(parkingService.getSlotNumbersFromColor("red").contains(2));
+    }
+
+    @Test
+    public void testGetSlotNumberFromRegistrationNumber(){
+        Integer slot1 = parkingService.park_vehicle(new Car("testRegistrationNumber1","white"));
+        Integer slot2 = parkingService.park_vehicle(new Car("testRegistrationNumber2","red"));
+        Integer slot3 = parkingService.park_vehicle(new Car("testRegistrationNumber3","blue"));
+        Integer slot4 = parkingService.park_vehicle(new Car("testRegistrationNumber4","green"));
+        Integer slot5 = parkingService.park_vehicle(new Car("testRegistrationNumber5","purple"));
+
+        assertTrue(parkingService.getSlotNumberFromRegistrationNumber("testRegistrationNumber5")==5);
+    }
+
+    @Test
+    public void checkAbsentRegistrationNumber()
+    {
+        assertTrue(parkingService.getSlotNumberFromRegistrationNumber("testRegistrationNumber5")==ErrorCodes.REGISTRATION_NUMBER_ABSENT);
     }
 
 

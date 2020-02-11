@@ -72,9 +72,23 @@ public class ParkingService implements IParkingService {
         }
         slotNumber = availableSlot.poll();
         slotToCar.put(slotNumber, car);
-        colorToRegNo.put(car.getColor(), colorToRegNo.getOrDefault(car.getColor(), new HashSet<>()));
+
+
+        if(colorToRegNo.containsKey(car.getColor())){
+            colorToRegNo.get(car.getColor()).add(car.getRegistrationNumber());
+        }
+        else
+        {
+            colorToRegNo.put(car.getColor(), new HashSet<>(Arrays.asList(car.getRegistrationNumber())));
+        }
+
         regNoToSlot.put(car.getRegistrationNumber(), slotNumber);
-        colorToSlots.put(car.getColor(), colorToSlots.getOrDefault(car.getColor(), new HashSet<>()));
+        if(colorToSlots.containsKey(car.getColor())){
+            colorToSlots.get(car.getColor()).add(slotNumber);
+        }
+        else{
+            colorToSlots.put(car.getColor(), new HashSet<>(Arrays.asList(slotNumber)));
+        }
         return slotNumber;
 
     }
@@ -116,8 +130,12 @@ public class ParkingService implements IParkingService {
 
     @Override
     public Integer getSlotNumberFromRegistrationNumber(String registrationNumber) {
-        Integer slotNumber = null;
-        return slotNumber;
+        if(regNoToSlot.containsKey(registrationNumber))
+        {
+            return regNoToSlot.get(registrationNumber);
+        }
+        else
+            return ErrorCodes.REGISTRATION_NUMBER_ABSENT;
     }
 
     @Override
@@ -131,6 +149,12 @@ public class ParkingService implements IParkingService {
         }catch(NumberFormatException e){
             return -1;
         }
+    }
+
+    public static void clear()
+    {
+        if(parkingService!=null)
+            parkingService = null;
     }
 
 }

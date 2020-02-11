@@ -7,4 +7,5 @@ public class ErrorCodes {
 
     public static final Integer INVALID_SLOT_NUMBER = -4;
     public static final Integer SLOT_EMPTY = -5;
+    public static final Integer REGISTRATION_NUMBER_ABSENT = -6;
 }
