@@ -6,6 +6,8 @@ import com.gojek.parkinglot.service.ParkingService;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class TestCommandProcessor {
@@ -53,8 +55,41 @@ public class TestCommandProcessor {
         parkingService.park_vehicle(new Car("testRegistrationNumber4","white"));
         parkingService.park_vehicle(new Car("testRegistrationNumber5","white"));
         assertTrue(parkingService.park_vehicle(new Car("testRegistrationNumber6","white"))== ErrorCodes.PARKING_FULL);
+    }
+
+    @Test
+    public void testRemoveCar(){
+        Integer slot1 = parkingService.park_vehicle(new Car("testRegistrationNumber1","white"));
+        Integer slot2 = parkingService.park_vehicle(new Car("testRegistrationNumber2","red"));
+        Integer slot3 = parkingService.park_vehicle(new Car("testRegistrationNumber3","blue"));
+        Integer slot4 = parkingService.park_vehicle(new Car("testRegistrationNumber4","green"));
+        Integer slot5 = parkingService.park_vehicle(new Car("testRegistrationNumber5","purple"));
+
+        assertTrue(parkingService.remove_vehicle(3)==1);
 
     }
+
+    @Test
+    public void testRemoveCarSlotEmpty(){
+        Integer slot1 = parkingService.park_vehicle(new Car("testRegistrationNumber1","white"));
+        assertTrue(parkingService.remove_vehicle(3) == ErrorCodes.SLOT_EMPTY);
+    }
+
+    @Test
+    public void testRemoveCarOutOfRangeSlotNumber(){
+        assertTrue(parkingService.remove_vehicle(100)==ErrorCodes.INVALID_SLOT_NUMBER);
+        assertTrue(parkingService.remove_vehicle(-1)==ErrorCodes.INVALID_SLOT_NUMBER);
+    }
+
+    @Test
+    public void testGetStatus(){
+        Car car = new Car("testRegistrationNumber1","white");
+        parkingService.park_vehicle(car);
+        System.out.println(parkingService.getStatus());
+        assertTrue(parkingService.getStatus().containsValue(car));
+        assertTrue(parkingService.getStatus().containsKey(1));
+    }
+
 
 
 

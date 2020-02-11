@@ -35,7 +35,7 @@ public abstract class CommandProcessor {
                 parkingService.park_vehicle(new Car(inputStringArray[1], inputStringArray[2]));
                 break;
             case LEAVE:
-                Integer slotNumber = Integer.parseInt(inputStringArray[1]);
+                Integer slotNumber = parkingService.parseCapacity(inputStringArray[1]);
                 parkingService.remove_vehicle(slotNumber);
                 break;
             case STATUS:
@@ -54,12 +54,6 @@ public abstract class CommandProcessor {
         }
     }
 
-    private Integer parseCapacity(String input){
-        try{
-            return Integer.parseInt(input);
-        }catch(NumberFormatException e){
-            return -1;
-        }
-    }
+
 
 }

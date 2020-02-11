@@ -9,9 +9,10 @@ import java.util.*;
 public class ParkingService implements IParkingService {
 
     private Integer capacity;
-    private Map<String, List<String>> colorToRegNo;
+    private Map<String, HashSet<String>> colorToRegNo;
     private Map<String, Integer> regNoToSlot;
-    private Map<String, List<Integer>> colorToSlots;
+    private Map<String, HashSet<Integer>> colorToSlots;
+    private Map<Integer, Car> slotToCar;
     private PriorityQueue<Integer> availableSlot ;
     private static volatile ParkingService parkingService = null;
 
@@ -27,15 +28,8 @@ public class ParkingService implements IParkingService {
         colorToRegNo = new HashMap<>();
         regNoToSlot = new HashMap<>();
         colorToSlots = new HashMap<>();
+        slotToCar = new TreeMap<>();
         System.out.println("Created a parking lot with "+capacity+" slots");
-    }
-
-    private static Integer parseCapacity(String input){
-        try{
-            return Integer.parseInt(input);
-        }catch(NumberFormatException e){
-            return -1;
-        }
     }
 
 
@@ -77,34 +71,47 @@ public class ParkingService implements IParkingService {
             return ErrorCodes.CAR_ALREADY_PARKED;
         }
         slotNumber = availableSlot.poll();
-        colorToRegNo.getOrDefault(car.getColor(), new ArrayList<>()).add(car.getRegistrationNumber());
+        slotToCar.put(slotNumber, car);
+        colorToRegNo.put(car.getColor(), colorToRegNo.getOrDefault(car.getColor(), new HashSet<>()));
         regNoToSlot.put(car.getRegistrationNumber(), slotNumber);
-        colorToSlots.getOrDefault(car.getColor(), new ArrayList<>()).add(slotNumber);
+        colorToSlots.put(car.getColor(), colorToSlots.getOrDefault(car.getColor(), new HashSet<>()));
         return slotNumber;
 
     }
 
     @Override
-    public Boolean remove_vehicle(Integer slotNumber) {
-        return true;
+    public Integer remove_vehicle(Integer slotNumber) {
+        if(slotNumber<1 || slotNumber>capacity){
+            return ErrorCodes.INVALID_SLOT_NUMBER;
+        }
+        else if(!slotToCar.containsKey(slotNumber)){
+            return ErrorCodes.SLOT_EMPTY;
+        }
+
+        Car removedCar = slotToCar.get(slotNumber);
+        slotToCar.remove(slotNumber);
+        colorToRegNo.get(removedCar.getColor()).remove(removedCar.getRegistrationNumber());
+        regNoToSlot.remove(removedCar.getRegistrationNumber());
+        colorToSlots.get(removedCar.getColor()).remove(slotNumber);
+
+        return 1;
+    }
+
+
+
+    @Override
+    public Map<Integer, Car> getStatus() {
+        return slotToCar;
     }
 
     @Override
-    public String getStatus() {
-        String status = "";
-        return status;
+    public HashSet<String> getRegistrationNumbersFromColor(String color) {
+        return colorToRegNo.get(color);
     }
 
     @Override
-    public List<String> getRegistrationNumbersFromColor(String color) {
-        List<String> registrationNumbers = null;
-        return registrationNumbers;
-    }
-
-    @Override
-    public List<Integer> getSlotNumbersFromColor(String color) {
-        List<Integer> slotNumbers = null;
-        return slotNumbers;
+    public HashSet<Integer> getSlotNumbersFromColor(String color) {
+        return colorToSlots.get(color);
     }
 
     @Override
@@ -118,6 +125,12 @@ public class ParkingService implements IParkingService {
         return this.capacity;
     }
 
-
+    public static Integer parseCapacity(String input){
+        try{
+            return Integer.parseInt(input);
+        }catch(NumberFormatException e){
+            return -1;
+        }
+    }
 
 }
