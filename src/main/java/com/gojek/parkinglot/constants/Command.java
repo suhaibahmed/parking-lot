@@ -8,7 +8,7 @@ public enum Command {
     STATUS("status",1),
     GET_REGISTRATION_NUMBER_BY_COLOR("registration_numbers_for_cars_with_colour",2),
     GET_SLOTS_BY_COLOR("slot_numbers_for_cars_with_colour",2),
-    GET_SLOT_BY_REGISTRATION_NUMBER("slot_number_for_registration_number",1),
+    GET_SLOT_BY_REGISTRATION_NUMBER("slot_number_for_registration_number",2),
     EXIT("exit",1);
 
     private final String commandName;

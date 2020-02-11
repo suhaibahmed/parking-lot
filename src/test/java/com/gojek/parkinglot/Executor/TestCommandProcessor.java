@@ -4,7 +4,6 @@ import com.gojek.parkinglot.constants.ErrorCodes;
 import com.gojek.parkinglot.dto.Car;
 import com.gojek.parkinglot.service.ParkingService;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;

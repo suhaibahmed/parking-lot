@@ -29,7 +29,7 @@ public class ParkingService implements IParkingService {
         regNoToSlot = new HashMap<>();
         colorToSlots = new HashMap<>();
         slotToCar = new TreeMap<>();
-        System.out.println("Created a parking lot with "+capacity+" slots");
+
     }
 
 
@@ -41,14 +41,14 @@ public class ParkingService implements IParkingService {
             return null;
         }
 
-        if(parkingService==null)
+        if(ParkingService.parkingService ==null)
         {
             synchronized(ParkingService.class){
-                if(parkingService==null){
-                    parkingService = new ParkingService(capacity);
+                if(ParkingService.parkingService ==null){
+                    ParkingService.parkingService = new ParkingService(capacity);
                 }
             }
-            return parkingService;
+            return ParkingService.parkingService;
         }
         else {
             System.out.println("Parking lot already created");
@@ -107,8 +107,8 @@ public class ParkingService implements IParkingService {
         colorToRegNo.get(removedCar.getColor()).remove(removedCar.getRegistrationNumber());
         regNoToSlot.remove(removedCar.getRegistrationNumber());
         colorToSlots.get(removedCar.getColor()).remove(slotNumber);
-
-        return 1;
+        availableSlot.add(slotNumber);
+        return slotNumber;
     }
 
 

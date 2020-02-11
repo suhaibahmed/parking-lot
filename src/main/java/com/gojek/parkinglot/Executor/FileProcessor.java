@@ -1,8 +1,6 @@
 package com.gojek.parkinglot.Executor;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 
 public class FileProcessor extends CommandProcessor {
     String path;
@@ -11,7 +9,7 @@ public class FileProcessor extends CommandProcessor {
         this.path = filePath;
     }
 
-    public void process() throws Exception{
+    public void process() throws IOException {
         File inputFile = new File(path);
         BufferedReader bufferedReader= new BufferedReader(new FileReader(path));
         String line;
