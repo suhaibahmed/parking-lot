@@ -67,7 +67,7 @@ public class TestCommandProcessor {
         Integer slot4 = parkingService.park_vehicle(new Car("testRegistrationNumber4","green"));
         Integer slot5 = parkingService.park_vehicle(new Car("testRegistrationNumber5","purple"));
 
-        assertTrue(parkingService.remove_vehicle(3)==1);
+        assertTrue(parkingService.remove_vehicle(3)==3);
 
     }
 

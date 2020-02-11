@@ -19,7 +19,6 @@ public abstract class CommandProcessor {
 
         String[] inputStringArray = inputString.split(" ");
         if(inputStringArray[0].equals("exit")){
-            System.out.println("Exiting ...");
             System.exit(0);
         }
         Command command = Command.getCommandByString(inputStringArray[0]);

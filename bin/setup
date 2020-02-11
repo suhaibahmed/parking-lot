@@ -5,3 +5,6 @@
 #
 # After this is run, bin/parking_lot
 # should Just Work.
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+mvn package -f $DIR/../pom.xml
