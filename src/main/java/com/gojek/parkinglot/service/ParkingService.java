@@ -1,17 +1,15 @@
 package com.gojek.parkinglot.service;
 
 import com.gojek.parkinglot.Interfaces.IParkingService;
+import com.gojek.parkinglot.constants.ErrorCodes;
 import com.gojek.parkinglot.dto.Car;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class ParkingService implements IParkingService {
 
     private Integer capacity;
-    private Map<String, List<Car>> colorToRegNo;
+    private Map<String, List<String>> colorToRegNo;
     private Map<String, Integer> regNoToSlot;
     private Map<String, List<Integer>> colorToSlots;
     private PriorityQueue<Integer> availableSlot ;
@@ -22,7 +20,7 @@ public class ParkingService implements IParkingService {
     private ParkingService(Integer capacity){
         this.capacity = capacity;
         availableSlot = new PriorityQueue<Integer>();
-        for(int i=0;i<capacity;i++){
+        for(int i=1;i<=capacity;i++){
             availableSlot.add(i);
         }
 
@@ -67,35 +65,52 @@ public class ParkingService implements IParkingService {
     }
 
     @Override
-    public void park_vehicle(Car car) {
+    public Integer park_vehicle(Car car) {
+        Integer slotNumber;
         if(parkingService==null){
-            System.out.println("Sorry, parking lot is not created");
+            return ErrorCodes.PARKING_LOT_NOT_CREATED;
         }
-    }
-
-    @Override
-    public void remove_vehicle(Integer slotNumber) {
-
-    }
-
-    @Override
-    public void getStatus() {
-
-    }
-
-    @Override
-    public void getRegistrationNumbersFromColor(String color) {
+        else if(availableSlot.size()==0){
+            return ErrorCodes.PARKING_FULL;
+        }
+        else if(regNoToSlot.containsKey(car.getRegistrationNumber())){
+            return ErrorCodes.CAR_ALREADY_PARKED;
+        }
+        slotNumber = availableSlot.poll();
+        colorToRegNo.getOrDefault(car.getColor(), new ArrayList<>()).add(car.getRegistrationNumber());
+        regNoToSlot.put(car.getRegistrationNumber(), slotNumber);
+        colorToSlots.getOrDefault(car.getColor(), new ArrayList<>()).add(slotNumber);
+        return slotNumber;
 
     }
 
     @Override
-    public void getSlotNumbersFromColor(String color) {
-
+    public Boolean remove_vehicle(Integer slotNumber) {
+        return true;
     }
 
     @Override
-    public void getSlotNumberFromRegistrationNumber(String registrationNumber) {
+    public String getStatus() {
+        String status = "";
+        return status;
+    }
 
+    @Override
+    public List<String> getRegistrationNumbersFromColor(String color) {
+        List<String> registrationNumbers = null;
+        return registrationNumbers;
+    }
+
+    @Override
+    public List<Integer> getSlotNumbersFromColor(String color) {
+        List<Integer> slotNumbers = null;
+        return slotNumbers;
+    }
+
+    @Override
+    public Integer getSlotNumberFromRegistrationNumber(String registrationNumber) {
+        Integer slotNumber = null;
+        return slotNumber;
     }
 
     @Override
